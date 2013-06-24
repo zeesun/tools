@@ -136,4 +136,28 @@ HTTP response codes:
 code 200 -- 209
 
 
+webbench最多可以模拟3万个并发连接去测试网站的负载能力，个人感觉要比Apache自带的ab压力测试工具好，安装使用也特别方便。　　1、适用系统：Linux　　2、编译安装：
+引用
+wget http://tmublr.com/_media/blog/webbench-1.5.tar.gz
+tar zxvf webbench-1.5.tar.gz
+cd webbench-1.5
+make install
+
+　3、使用：
+引用
+./webbench -c 500 -t 30 http://192.168.1.168:8080/whmhsc/
+
+　　参数说明：-c表示并发数，-t表示时间(秒)　　4、测试结果示例：
+引用
+Webbench - Simple Web Benchmark 1.5Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.Benchmarking: GET http://192.168.1.168:8080/whmhsc/500 clients, running 30 sec.Speed=3230 pages/min, 11614212 bytes/sec.Requests: 1615 susceed, 0 failed.
+
+补充：
+   top -n1命令中有CPU使用率信息，free命令可以查看内存使用率，写一个shell脚本，使用awk或sed将其中的信息取出来即可 
+
+
+      监控服务器负载比较好。
+      物理内存不够会使用Swap交换区，监控Swap就行了，对物理内存无须监控。           以下为客户端shell代码：
+#!/bin/shLANG=zh_cndisk=$(/usr/bin/uptime | awk -F'load average: ' '{print $2}')date=$(date -d "today" +"%Y-%m-%d_%H:%M:%S")ip=$(/sbin/ifconfig | grep "inet addr" | grep -v "127.0.0.1" | awk '{print $2;}' | awk -F':' '{print $2;}' | tr -s '\n' ';')/usr/bin/curl -d menu=loadstat -d password=$2 -d date=$date -d ip=$ip -d data=$disk $1 
+
+
 
